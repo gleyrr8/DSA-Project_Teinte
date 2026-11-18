@@ -1,0 +1,3 @@
+# Local SQLite mode uses only Python's standard library.
+# PostgreSQL runtime driver:
+psycopg[binary]>=3.2,<4
