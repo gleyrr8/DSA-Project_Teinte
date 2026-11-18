@@ -1,0 +1,268 @@
+{
+  "parser_version": "teinte-csv-stage/1.0",
+  "source_directory": "/Users/glaireann/Downloads/Final Teinte/Teinte_Complete_Shade_Catalogue_and_Matching_Database",
+  "published_records": 0,
+  "staged": {
+    "Complete_Shade_List.csv": {
+      "rows": 956,
+      "rejected_rows": 0,
+      "record_type": "shade_observation",
+      "sha256": "ba22dad62600c1cb55c9b52a0c2f1e90d8b1849c4f3049592e5c49a39b91606f"
+    },
+    "All_Shade_Match_Claims.csv": {
+      "rows": 4809,
+      "rejected_rows": 0,
+      "record_type": "match_claim_observation",
+      "sha256": "2b8e16cc69d88875c72c19266874ab64de4dd4845de814f7c6b8647ced04e7cf"
+    },
+    "Product_Catalogue.csv": {
+      "rows": 26,
+      "rejected_rows": 0,
+      "record_type": "product_candidate",
+      "sha256": "4951568d5e77f8f30331861dde660bccf8b207775bc0053e006b0ba0fa4a2bea"
+    },
+    "Product_Identity_Notes.csv": {
+      "rows": 86,
+      "rejected_rows": 0,
+      "record_type": "identity_note",
+      "sha256": "eff2983f15142812038289360c58d4caa2bed2b2cc229253f45c7f38e31bd2a0"
+    },
+    "Attribute_Notes.csv": {
+      "rows": 5,
+      "rejected_rows": 0,
+      "record_type": "attribute_note",
+      "sha256": "944eca70453aa3f2725f0fbc09892dc41eb807f2d11e8837c0740a6fedbd4f16"
+    },
+    "Reviewed_Comparisons.csv": {
+      "rows": 22,
+      "rejected_rows": 0,
+      "record_type": "reviewed_comparison",
+      "sha256": "085bb5816b386f5f08c809ec3c25bd337c1b84658bb8edfd73da0f719ca4817c"
+    },
+    "Source_Index.csv": {
+      "rows": 26,
+      "rejected_rows": 0,
+      "record_type": "source_index",
+      "sha256": "659204b23bcf7735bc7a21d8fde0fd30076bb915f1579a338eac82f22e79d24c"
+    }
+  },
+  "workbook_staged_rows": {
+    "Teinte_Complete_Shade_Catalogue_and_Matching_Database.xlsx": 5949,
+    "Teinte_Master_Catalogue.xlsx": 6101
+  },
+  "source_files": [
+    {
+      "filename": "Full Shade Matrix-10.pdf",
+      "sha256": "e6796715ecf3f2dad461ce7dae12e7fd192d9bb789f88602d84851a453ef25a0",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-11.pdf",
+      "sha256": "4893680e47a19a466fd063c192eb4eab46475cb57eb657e4e9e3d8caff55ace5",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-12.pdf",
+      "sha256": "d2338dcc1114021056552bb54fc932dd429f7387a89d325dec650cf9afc32656",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-13.pdf",
+      "sha256": "feeb97a5e0aa5a0d97553110d05a694f68cd295333cbcb92e4e7f5bc67b8212f",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-14.pdf",
+      "sha256": "48fff4a82bc36f0ac64e5266fa2361eed58766dcf10717eae186202cd06e575a",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-15.pdf",
+      "sha256": "96140c8d76f4ed8b2e6e87e72eb8839665ffcb36fd492835b2d9084bb311e569",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-16.pdf",
+      "sha256": "dedc17cb9ac5b6818bdca5c32d8fe3a91e99cd47ef370d16ceb4288d46001f20",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-17.pdf",
+      "sha256": "992ef48931205c0903cd57834bfba061381a144bdb27dee498a045b23915e9f8",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-18.pdf",
+      "sha256": "0bb0fbe48877cbd32f67c425fbf75b5c911b177f43b418da62bcd9044ad1ddcf",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-19.pdf",
+      "sha256": "478004523beecd301d784615c3f452b1900fa74807d6fb2db6634611742a05e2",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-2.pdf",
+      "sha256": "e7bea7379729bc06819adcf64fc07b680d67b520c1c22040628a00ec4a0f0d12",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-20.pdf",
+      "sha256": "2d75390f474874672a3831eb162efad983d1dd96e5992eefedf823f5d0d268c1",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-21.pdf",
+      "sha256": "34c6ad61fad175204d186bf3e94d89a9db40b098331546b059b0e92ce254d413",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-22.pdf",
+      "sha256": "e132e7adcdf43bb991adb5ff5556997406a0e8fcbb11e5162a2c1c6f4878ce31",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-23.pdf",
+      "sha256": "1094847a840e4d29bbd64d2272ea3898e77ae92e9b9fe1c6627eff9f4bc811d2",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-24.pdf",
+      "sha256": "781baaa658cc054b197da7fb131ed299b828cb5224f7cb1efb4f098c30563790",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-25.pdf",
+      "sha256": "443595c7592b8b59363d01df61efa9ae5e31b38bcfe06446f8aa59d3ee261129",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-26.pdf",
+      "sha256": "acc47cccc1fa70449ca34d08e58b91e12042fbf0682785085eb8684ba010972c",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-27.pdf",
+      "sha256": "0a485fd464895d6025560505b7749724241a0c4a085b72e3c6fc6b6265bb9bee",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-3.pdf",
+      "sha256": "c00c58012f878cf3055cb1beb99e910e4eec6e844fc0bd60b7deda9e1e4d8a82",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-4.pdf",
+      "sha256": "e934a5d7866af9fdf53724ad79679130e40d62c9cd59bf693244489bc5d4cfb4",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-6.pdf",
+      "sha256": "5427b15941f048ca3e95f95796bc1568c40e74c0ce79ec79c1c7ff7774bf99f1",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-7.pdf",
+      "sha256": "2a1910e34b3fb1643472828dbc0a7263146616224830ef94a249006f491de21b",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-8.pdf",
+      "sha256": "03604516d164eb143aa87e279f3acc49492aebe7c9491783b7a56aaaa598ffd2",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix-9.pdf",
+      "sha256": "e615db558b6348ef9b18c6819520b6c0a4dbff2a8afae2cdafef3c6902f9f774",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Full Shade Matrix.pdf",
+      "sha256": "d88b82122a7dcf40717c0718b7adce0da9398fe7a61a8a0a8bf5e497168eced3",
+      "type": "evidence input",
+      "staged_rows": 0
+    },
+    {
+      "filename": "Teinte_Complete_Shade_Catalogue_and_Matching_Database.xlsx",
+      "sha256": "f036a1cb8831f1efab7b3b3415e3e3012bcbf6d0acda20a2712839446e032851",
+      "type": "workbook staging",
+      "staged_rows": 5949
+    },
+    {
+      "filename": "Teinte_Master_Catalogue.xlsx",
+      "sha256": "df79b7fea912c13dbea28d93d8a7a0e6674e2dd8c4bf7a303ae279aa71623454",
+      "type": "workbook staging",
+      "staged_rows": 6101
+    },
+    {
+      "filename": "Complete_Shade_List.csv",
+      "sha256": "ba22dad62600c1cb55c9b52a0c2f1e90d8b1849c4f3049592e5c49a39b91606f",
+      "type": "CSV staging input",
+      "staged_rows": 956
+    },
+    {
+      "filename": "All_Shade_Match_Claims.csv",
+      "sha256": "2b8e16cc69d88875c72c19266874ab64de4dd4845de814f7c6b8647ced04e7cf",
+      "type": "CSV staging input",
+      "staged_rows": 4809
+    },
+    {
+      "filename": "Product_Catalogue.csv",
+      "sha256": "4951568d5e77f8f30331861dde660bccf8b207775bc0053e006b0ba0fa4a2bea",
+      "type": "CSV staging input",
+      "staged_rows": 26
+    },
+    {
+      "filename": "Product_Identity_Notes.csv",
+      "sha256": "eff2983f15142812038289360c58d4caa2bed2b2cc229253f45c7f38e31bd2a0",
+      "type": "CSV staging input",
+      "staged_rows": 86
+    },
+    {
+      "filename": "Attribute_Notes.csv",
+      "sha256": "944eca70453aa3f2725f0fbc09892dc41eb807f2d11e8837c0740a6fedbd4f16",
+      "type": "CSV staging input",
+      "staged_rows": 5
+    },
+    {
+      "filename": "Reviewed_Comparisons.csv",
+      "sha256": "085bb5816b386f5f08c809ec3c25bd337c1b84658bb8edfd73da0f719ca4817c",
+      "type": "CSV staging input",
+      "staged_rows": 22
+    },
+    {
+      "filename": "Source_Index.csv",
+      "sha256": "659204b23bcf7735bc7a21d8fde0fd30076bb915f1579a338eac82f22e79d24c",
+      "type": "CSV staging input",
+      "staged_rows": 26
+    }
+  ],
+  "missing_registered_matrices": [
+    "Full Shade Matrix-5.pdf"
+  ]
+}

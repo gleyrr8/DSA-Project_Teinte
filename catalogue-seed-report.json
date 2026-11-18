@@ -1,0 +1,419 @@
+{
+  "mode": "source-trusting preloaded catalogue",
+  "source_products": 26,
+  "published_brands": 20,
+  "published_products": 26,
+  "published_shades": 409,
+  "published_source_claims_added_this_run": 389,
+  "shade_observations_loaded": 790,
+  "unresolved_shade_observations": 166,
+  "unresolved_or_ambiguous_claims": 4420,
+  "notes": [
+    "Source values are trusted as requested but labeled Source-derived.",
+    "Shade rows use the supplied suggested product ID or a clear product label; source-matrix IDs are provenance only.",
+    "Claims with unresolved endpoints remain staged.",
+    "Conflicting depth/undertone values are left blank."
+  ],
+  "unresolved_shades": [
+    {
+      "id": "TS-00086",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00125",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00126",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00127",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00128",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00129",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00130",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00131",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00132",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00133",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00134",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00135",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00136",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00137",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00138",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00139",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00140",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00141",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00142",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00143",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00144",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00145",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00146",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00147",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00184",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00252",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00253",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00254",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00255",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00256",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00259",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00260",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00382",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00383",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00384",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00385",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00386",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00387",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00388",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00389",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00390",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00391",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00392",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00393",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00394",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00395",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00396",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00397",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00398",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00399",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00400",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00401",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00402",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00403",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00404",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00405",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00406",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00407",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00408",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00409",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00410",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00411",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00412",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00413",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00414",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00415",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00416",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00417",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00418",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00419",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00420",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00421",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00422",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00423",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00424",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00425",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00426",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00427",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00428",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00429",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00430",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00431",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00432",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00433",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00434",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00435",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00436",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00437",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00438",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00439",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00440",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00441",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00442",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00443",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00444",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00445",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00446",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00447",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00448",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    },
+    {
+      "id": "TS-00449",
+      "reason": "row wording does not identify a product; source-matrix IDs are provenance only"
+    }
+  ]
+}
