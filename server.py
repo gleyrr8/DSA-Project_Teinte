@@ -8,7 +8,10 @@ import unicodedata, difflib
 import re as _re
 
 ROOT = Path(__file__).resolve().parent
-DB_PATH = Path(os.environ.get('TEINTE_DB_PATH', ROOT / 'data' / 'teinte.sqlite3'))
+DB_DEFAULT = ROOT / 'data' / 'teinte.sqlite3'
+if not DB_DEFAULT.exists() and (ROOT / 'teinte.sqlite3').exists():
+    DB_DEFAULT = ROOT / 'teinte.sqlite3'
+DB_PATH = Path(os.environ.get('TEINTE_DB_PATH', DB_DEFAULT))
 STATIC = ROOT / 'public'
 DEPTHS = ['Fair','Light','Light-Medium','Medium','Medium-Tan','Tan','Deep']
 UNDERTONES = ['Cool','Neutral','Warm','Olive']
@@ -73,7 +76,7 @@ def undertone_profile_values(value):
     components eligible for manual profile filtering. Unknown-only labels stay out.
     """
     parts=set(re.findall(r'cool|neutral|warm|olive',norm(value)))
-    return parts
+    return {part.title() for part in parts}
 def product_type(fmt, name=''):
     value=norm((fmt or '')+' '+(name or ''))
     if 'powder' in value and 'foundation' in value:return 'powder_foundation'
