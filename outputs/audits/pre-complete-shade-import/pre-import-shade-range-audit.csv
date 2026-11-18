@@ -1,0 +1,27 @@
+product_id,brand,product,matrix_file,matrix_listed_shade_count,currently_published_shade_count,difference,count_check
+TP-001,Colourette,First Base Everyday Skin Tint,Full Shade Matrix.pdf,20,13,-7,COUNT MISMATCH
+TP-002,ISSY,Active Foundation,Full Shade Matrix-2.pdf,27,27,0,count matches; names still require range-by-range review
+TP-003,ISSY,True Flex Powder Foundation,Full Shade Matrix-3.pdf,9,24,15,COUNT MISMATCH
+TP-004,ISSY,Active Skin Tint SPF 35,Full Shade Matrix-4.pdf,12,24,12,COUNT MISMATCH
+TP-005,GRWM Cosmetics,All About That Base Fresh Matte Multiuse Base,Full Shade Matrix-6.pdf,18,35,17,COUNT MISMATCH
+TP-006,GRWM Cosmetics,All About That Base Daily Skin Tint Broad Spectrum SPF 30 PA+++,Full Shade Matrix-7.pdf,25,25,0,count matches; names still require range-by-range review
+TP-007,Ever Bilena,All Day Matte Liquid Foundation,Full Shade Matrix-8.pdf,4,9,5,COUNT MISMATCH
+TP-008,EB Plus,Good Skin Day Skin Tint,Full Shade Matrix-9.pdf,5,8,3,COUNT MISMATCH
+TP-009,Strokes Beauty Lab,Soft Veil Filter Foundation,Full Shade Matrix-10.pdf,16,14,-2,COUNT MISMATCH
+TP-010,Strokes Beauty Lab,Silk Veil Powder Foundation,Full Shade Matrix-11.pdf,15,24,9,COUNT MISMATCH
+TP-011,Vice Cosmetics,Endlezz Dream Focus Weightless Foundation,Full Shade Matrix-12.pdf,9,17,8,COUNT MISMATCH
+TP-012,Vice Cosmetics,SUNWEAR Infinite Blur Skin Tint SPF 50 PA++++,Full Shade Matrix-13.pdf,10,13,3,COUNT MISMATCH
+TP-013,BLK Cosmetics,Fresh Radiant Glow Foundation,Full Shade Matrix-14.pdf,6,14,8,COUNT MISMATCH
+TP-014,BLK Cosmetics,Universal Skin Tint Sun Shield SPF 30,Full Shade Matrix-15.pdf,15,15,0,count matches; names still require range-by-range review
+TP-015,Lucky Beauty,Skin Blur Powder Foundation,Full Shade Matrix-16.pdf,9,20,11,COUNT MISMATCH
+TP-016,Happy Skin,Second Skin Matte Serum Cushion Foundation SPF 15,Full Shade Matrix-17.pdf,8,10,2,COUNT MISMATCH
+TP-017,Generation Happy Skin,Blurring Skin Tint SPF 20,Full Shade Matrix-18.pdf,8,11,3,COUNT MISMATCH
+TP-018,Ellana,Loose Mineral SkinShield Foundation SPF 16,Full Shade Matrix-19.pdf,10,34,24,COUNT MISMATCH
+TP-019,Careline,Oil Control Skin Tint,Full Shade Matrix-20.pdf,8,9,1,COUNT MISMATCH
+TP-020,Human Nature,Soft Glow Skin Tint,Full Shade Matrix-21.pdf,6,6,0,count matches; names still require range-by-range review
+TP-021,Absidy,Vital Blur Filter Skin Tint,Full Shade Matrix-22.pdf,14,14,0,count matches; names still require range-by-range review
+TP-022,Sunnies Face,Skin So Good Daily Tinted Oil-Free Moisturizer SPF 20,Full Shade Matrix-23.pdf,6,9,3,COUNT MISMATCH
+TP-023,SOLA Beauty,Foundation Primer,Full Shade Matrix-24.pdf,5,1,-4,COUNT MISMATCH
+TP-024,Teviant,The Ultimate Skin Master Foundation,Full Shade Matrix-25.pdf,15,14,-1,COUNT MISMATCH
+TP-025,Detail Cosmetics,Fresh Filter Foundation,Full Shade Matrix-26.pdf,10,10,0,count matches; names still require range-by-range review
+TP-026,Dazzle Me,Acne Armor Cover & Correct Skin Tint,Full Shade Matrix-27.pdf,6,9,3,COUNT MISMATCH
