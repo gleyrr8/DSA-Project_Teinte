@@ -1,58 +1,110 @@
-let stageOffset = 0;
-const $ = s => document.querySelector(s);
-const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-async function call(url, opts = {}) {
-  const r = await fetch(url, {...opts, headers:{'Content-Type':'application/json', ...(opts.headers || {})}});
-  let d = {}; try { d = await r.json(); } catch {}
-  if (!r.ok) throw Error(d.error || 'Request failed'); return d;
+const $ = selector => document.querySelector(selector);
+const esc = value => String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
+let publishedShades = [];
+
+async function call(url, options = {}) {
+  const response = await fetch(url, {
+    ...options,
+    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
+  });
+  let data = {};
+  try { data = await response.json(); } catch {}
+  if (!response.ok) throw Error(data.error || 'Request failed. Please try again.');
+  return data;
 }
-const lines = s => String(s || '').split('\n').map(x=>x.trim()).filter(Boolean);
-function table(items, cols) {
-  if (!items?.length) return '<p class="admin-muted">Nothing to review here right now.</p>';
-  return `<table class="admin-table"><thead><tr>${cols.map(c=>`<th>${esc(c[1])}</th>`).join('')}</tr></thead><tbody>${items.map(x=>`<tr>${cols.map(c=>`<td>${esc(x[c[0]])}</td>`).join('')}</tr>`).join('')}</tbody></table>`;
-}
-async function load() {
-  const d = await call('/api/admin/overview');
-  $('#stats').innerHTML = `<div class="admin-stat"><strong>${d.staged}</strong><span>unreviewed staged records</span></div><div class="admin-stat"><strong>${d.corrections}</strong><span>corrections in review</span></div><div class="admin-stat"><strong>${d.published}</strong><span>published shades</span></div>`;
 
-  const staged = await call(`/api/admin/staged?offset=${stageOffset}&limit=25`);
-  $('#staged-list').innerHTML = staged.items.map(x=>`<div class="admin-item" data-stage="${esc(x.id)}"><b>${esc(x.filename)} · ${esc(x.record_type)} · source row ${x.source_row} · ${esc(x.disposition)}</b><p>${esc(JSON.stringify(JSON.parse(x.raw_payload)).slice(0,240))}</p><div class="admin-actions"><select aria-label="Staging disposition"><option value="needs_attention" ${x.disposition==='needs_attention'?'selected':''}>Needs attention</option><option value="reviewed_candidate" ${x.disposition==='reviewed_candidate'?'selected':''}>Reviewed candidate</option><option value="excluded" ${x.disposition==='excluded'?'selected':''}>Exclude</option></select><input aria-label="Review reason" placeholder="Reason required"><button class="button secondary" data-stage-save>Save review</button></div></div>`).join('') || '<p class="admin-muted">No staged records await disposition.</p>';
-  $('#staged-list').querySelectorAll('[data-stage-save]').forEach(b=>b.onclick=async()=>{const p=b.closest('[data-stage]');try{await call('/api/admin/review-stage',{method:'POST',body:JSON.stringify({id:p.dataset.stage,disposition:p.querySelector('select').value,reason:p.querySelector('input').value})});await load()}catch(e){alert(e.message)}});
-  const nav=document.createElement('div');nav.className='admin-actions';nav.innerHTML=`<button class="button secondary" ${stageOffset<=0?'disabled':''} data-stage-prev>Previous</button><span class="admin-muted">Rows ${staged.total?stageOffset+1:0}–${Math.min(stageOffset+staged.items.length,staged.total)} of ${staged.total}</span><button class="button secondary" ${stageOffset+staged.items.length>=staged.total?'disabled':''} data-stage-next>Next</button>`;$('#staged-list').append(nav);nav.querySelector('[data-stage-prev]').onclick=()=>{stageOffset=Math.max(0,stageOffset-25);load()};nav.querySelector('[data-stage-next]').onclick=()=>{stageOffset+=25;load()};
-
-  const [brands, products, shades, claims] = await Promise.all([call('/api/admin/brands'),call('/api/admin/products'),call('/api/admin/shades'),call('/api/admin/claims')]);
-  const bs=brands.items, ps=products.items, ss=shades.items;
-  $('#product-form select[name=brand_id]').innerHTML=bs.map(x=>`<option value="${esc(x.id)}">${esc(x.name)}</option>`).join('');
-  $('#shade-form select[name=product_id]').innerHTML=ps.filter(x=>x.publication_state!=='Archived').map(x=>`<option value="${esc(x.id)}">${esc(x.brand_name)} · ${esc(x.name)}</option>`).join('');
-
-  $('#catalog-admin-list').innerHTML = bs.map(x=>`<div class="admin-item"><b>Brand · ${esc(x.name)} · ${esc(x.publication_state)}</b><p>Evidence: ${esc(x.evidence_json)}</p><div class="admin-actions"><button class="button secondary" data-edit-brand="${esc(x.id)}">Edit brand</button>${x.publication_state==='Draft'?`<input placeholder="Publication reason"><button class="button secondary" data-publish-brand="${esc(x.id)}">QA &amp; publish</button>`:''}${x.publication_state!=='Archived'?`<input placeholder="Archive reason"><button class="button secondary" data-archive-brand="${esc(x.id)}">Archive</button>`:''}</div></div>`).join('') + ps.map(x=>`<div class="admin-item"><b>Product · ${esc(x.brand_name)} · ${esc(x.name)} · ${esc(x.publication_state)}</b><p>${esc(x.format||'Format not supplied')} · ${esc(x.version||'Version not supplied')} · Evidence: ${esc(x.evidence_json)}</p><div class="admin-actions"><button class="button secondary" data-edit-product="${esc(x.id)}">Edit product</button>${x.publication_state==='Draft'?`<input placeholder="Publication reason"><button class="button secondary" data-publish-product="${esc(x.id)}">QA &amp; publish</button>`:''}${x.publication_state!=='Archived'?`<input placeholder="Archive reason"><button class="button secondary" data-archive-product="${esc(x.id)}">Archive</button>`:''}</div></div>`).join('') || '<p class="admin-muted">No brand or product records.</p>';
-  $('#catalog-admin-list').querySelectorAll('[data-edit-brand]').forEach(b=>b.onclick=async()=>{const x=bs.find(y=>y.id===b.dataset.editBrand),reason=prompt('Reason for the edit:');if(!reason)return;const name=prompt('Canonical brand name:',x.name);if(name===null)return;let aliases=[],ev={};try{aliases=JSON.parse(x.aliases||'[]');ev=JSON.parse(x.evidence_json||'{}')}catch{}const aliasText=prompt('Aliases, one per line:',aliases.join('\n'));if(aliasText===null)return;const refs=prompt('Updated brand identity evidence, one reference per line:',(ev.identity||[]).join('\n'));if(refs===null)return;try{await call('/api/admin/update-record',{method:'POST',body:JSON.stringify({entity_type:'brand',id:x.id,name,aliases:lines(aliasText),field_evidence:{identity:lines(refs)},reason})});await load()}catch(e){alert(e.message)}});
-  $('#catalog-admin-list').querySelectorAll('[data-edit-product]').forEach(b=>b.onclick=async()=>{const x=ps.find(y=>y.id===b.dataset.editProduct),reason=prompt('Reason for the edit:');if(!reason)return;const name=prompt('Canonical product name:',x.name);if(name===null)return;const version=prompt('Version / formula context:',x.version||'');if(version===null)return;const format=prompt('Product format:',x.format||'');if(format===null)return;let aliases=[],ev={};try{aliases=JSON.parse(x.aliases||'[]');ev=JSON.parse(x.evidence_json||'{}')}catch{}const aliasText=prompt('Aliases, one per line:',aliases.join('\n'));if(aliasText===null)return;const identity=prompt('Product identity evidence refs:',(ev.identity||[]).join('\n'));if(identity===null)return;const versionRefs=prompt('Version evidence refs:',(ev.version||[]).join('\n'));if(versionRefs===null)return;const formatRefs=prompt('Format evidence refs:',(ev.format||[]).join('\n'));if(formatRefs===null)return;try{await call('/api/admin/update-record',{method:'POST',body:JSON.stringify({entity_type:'product',id:x.id,name,version,format,aliases:lines(aliasText),field_evidence:{identity:lines(identity),version:lines(versionRefs),format:lines(formatRefs)},reason})});await load()}catch(e){alert(e.message)}});
-  for(const [attr,type] of [['brand','brand'],['product','product']]){
-    $('#catalog-admin-list').querySelectorAll(`[data-publish-${attr}]`).forEach(b=>b.onclick=async()=>{try{const reason=b.previousElementSibling.value;await call(`/api/admin/publish-${attr}`,{method:'POST',body:JSON.stringify({id:b.dataset[`publish${attr[0].toUpperCase()+attr.slice(1)}`],reason})});await load()}catch(e){alert(e.message)}});
-    $('#catalog-admin-list').querySelectorAll(`[data-archive-${attr}]`).forEach(b=>b.onclick=async()=>{try{const reason=b.previousElementSibling.value;await call('/api/admin/archive-record',{method:'POST',body:JSON.stringify({entity_type:type,id:b.dataset[`archive${attr[0].toUpperCase()+attr.slice(1)}`],reason})});await load()}catch(e){alert(e.message)}});
+function renderPublishedShades() {
+  const query = $('#shade-filter').value.trim().toLocaleLowerCase();
+  const matches = publishedShades.filter(shade =>
+    [shade.brand_name, shade.product_name, shade.name, shade.code]
+      .some(value => String(value || '').toLocaleLowerCase().includes(query))
+  );
+  $('#shade-count').textContent = query
+    ? `Showing ${matches.length} of ${publishedShades.length} published shades.`
+    : `${publishedShades.length} published shades.`;
+  if (!matches.length) {
+    $('#published-list').innerHTML = '<p class="admin-muted" style="padding:14px">No published shades match that search.</p>';
+    return;
   }
-
-  $('#correction-list').innerHTML=d.reports.map(x=>`<div class="admin-item"><b>${esc(x.id)} · ${esc(x.category)} · ${esc(x.status)}</b><p>${esc(x.description)}</p><p>Contact: ${esc(x.contact||'Not provided')} · retention deadline ${esc(x.retain_until)}</p><div class="admin-actions"><select aria-label="Correction status"><option ${x.status==='Under Review'?'selected':''}>Under Review</option><option ${x.status==='Resolved'?'selected':''}>Resolved</option><option ${x.status==='Rejected'?'selected':''}>Rejected</option></select><input aria-label="Review note" placeholder="Resolution/rejection reason"><button class="button secondary" data-report="${esc(x.id)}">Update</button></div></div>`).join('')||'<p class="admin-muted">No correction reports.</p>';
-  $('#correction-list').querySelectorAll('[data-report]').forEach(b=>b.onclick=async()=>{const p=b.closest('.admin-item');try{await call('/api/admin/review-correction',{method:'POST',body:JSON.stringify({id:b.dataset.report,status:p.querySelector('select').value,reason:p.querySelector('input').value})});await load()}catch(e){alert(e.message)}});
-
-  $('#publication-list').innerHTML=ss.map(x=>`<div class="admin-item" data-shade="${esc(x.id)}"><b>${esc(x.brand_name)} · ${esc(x.product_name)} · ${esc(x.name)}${x.code?' · '+esc(x.code):''}</b><p>State: ${esc(x.publication_state)} · ${esc(x.normalization_state)} · ${esc(x.depth||'Unknown')} (${esc(x.depth_confidence)}) / ${esc(x.undertone||'Unknown')} (${esc(x.undertone_confidence)}) · field evidence: ${esc(x.evidence_json)}</p><div class="admin-actions"><button class="button secondary" data-edit-shade="${esc(x.id)}">Edit attributes</button>${x.publication_state==='Draft'?`<input placeholder="Publication reason"><button class="button secondary" data-publish-shade="${esc(x.id)}">Run QA &amp; publish</button>`:''}${x.publication_state==='Published'?`<input placeholder="Archive reason"><button class="button secondary" data-archive-shade="${esc(x.id)}">Archive</button>`:''}</div></div>`).join('')||'<p class="admin-muted">No canonical shade records yet. Create reviewed records to begin.</p>';
-  $('#publication-list').querySelectorAll('[data-edit-shade]').forEach(b=>b.onclick=async()=>{const x=ss.find(y=>y.id===b.dataset.editShade),reason=prompt('Reason for the edit:');if(!reason)return;const name=prompt('Canonical shade name:',x.name);if(name===null)return;const code=prompt('Shade code:',x.code||'');if(code===null)return;const depth=prompt('Reviewed depth; blank leaves unresolved:',x.depth||'');if(depth===null)return;const undertone=prompt('Reviewed undertone; blank leaves unresolved:',x.undertone||'');if(undertone===null)return;const state=prompt('Normalization state (Source-derived, Official, Approved Editorial, Estimated, Incomplete):',x.normalization_state);if(state===null)return;const dc=prompt('Depth evidence confidence (High, Moderate, Limited, Unrated):',x.depth_confidence);if(dc===null)return;const uc=prompt('Undertone evidence confidence (High, Moderate, Limited, Unrated):',x.undertone_confidence);if(uc===null)return;let aliases=[],ev={};try{aliases=JSON.parse(x.aliases||'[]');ev=JSON.parse(x.evidence_json||'{}')}catch{}const aliasText=prompt('Shade aliases, one per line:',aliases.join('\n'));if(aliasText===null)return;for(const k of ['name','code','description','depth','undertone']){const current=(ev[k]||[]).join('\n');const val=prompt(`${k} evidence refs, one per line:`,current);if(val===null)return;ev[k]=lines(val)}try{await call('/api/admin/update-shade',{method:'POST',body:JSON.stringify({id:x.id,name,code,aliases:lines(aliasText),depth:depth||null,undertone:undertone||null,normalization_state:state,depth_confidence:dc,undertone_confidence:uc,field_evidence:ev,reason})});await load()}catch(e){alert(e.message)}});
-  $('#publication-list').querySelectorAll('[data-publish-shade]').forEach(b=>b.onclick=async()=>{try{const reason=b.previousElementSibling.value;await call('/api/admin/publish-shade',{method:'POST',body:JSON.stringify({id:b.dataset.publishShade,reason})});await load()}catch(e){alert(e.message)}});
-  $('#publication-list').querySelectorAll('[data-archive-shade]').forEach(b=>b.onclick=async()=>{try{await call('/api/admin/archive-record',{method:'POST',body:JSON.stringify({entity_type:'shade',id:b.dataset.archiveShade,reason:b.previousElementSibling.value})});await load()}catch(e){alert(e.message)}});
-
-  const pub=ss.filter(x=>x.publication_state==='Published').map(x=>`<option value="${esc(x.id)}">${esc(x.brand_name)} · ${esc(x.product_name)} · ${esc(x.name)}</option>`).join('');
-  $('#claim-form select[name=source_shade_id]').innerHTML=pub;$('#claim-form select[name=target_shade_id]').innerHTML=pub;
-  $('#claim-list').innerHTML=claims.items.map(x=>`<div class="admin-item"><b>${esc(x.source_brand)} · ${esc(x.source_product)} · ${esc(x.source_shade)} → ${esc(x.target_brand||'Missing target')} · ${esc(x.target_product||'')} · ${esc(x.target_shade||'')}</b><p>${esc(x.source_wording)} · ${esc(x.closeness||'Unnormalized')} · confidence ${esc(x.confidence)} · ${esc(x.status)} · ${esc(x.evidence_json)}</p>${x.status==='Draft'?`<div class="admin-actions"><input placeholder="Claim publication reason"><button class="button secondary" data-publish-claim="${esc(x.id)}">QA &amp; publish</button></div>`:''}</div>`).join('')||'<p class="admin-muted">No claims recorded.</p>';
-  $('#claim-list').querySelectorAll('[data-publish-claim]').forEach(b=>b.onclick=async()=>{try{await call('/api/admin/publish-claim',{method:'POST',body:JSON.stringify({id:b.dataset.publishClaim,reason:b.previousElementSibling.value})});await load()}catch(e){alert(e.message)}});
-  $('#audit-list').innerHTML=d.audit.map(x=>`<div class="admin-item"><b>${esc(x.created_at)} · ${esc(x.actor)} · ${esc(x.action)} · ${esc(x.entity_type)}</b><p>${esc(x.entity_id)} · ${esc(x.reason)}</p><div class="admin-actions"><input placeholder="Rollback reason"><button class="button secondary" data-rollback="${esc(x.id)}">Rollback this event</button></div></div>`).join('')||'<p class="admin-muted">No audit events yet.</p>';
-  $('#audit-list').querySelectorAll('[data-rollback]').forEach(b=>b.onclick=async()=>{try{await call('/api/admin/rollback',{method:'POST',body:JSON.stringify({event_id:b.dataset.rollback,reason:b.previousElementSibling.value})});await load()}catch(e){alert(e.message)}});
+  $('#published-list').innerHTML = `<table class="admin-table"><thead><tr><th>Brand</th><th>Product</th><th>Shade</th><th>Depth</th><th>Undertone</th></tr></thead><tbody>${matches.map(shade => `<tr><td>${esc(shade.brand_name)}</td><td>${esc(shade.product_name)}</td><td>${esc(shade.name)}${shade.code ? ` · ${esc(shade.code)}` : ''}</td><td>${esc(shade.depth || 'Not listed')}</td><td>${esc(shade.undertone || 'Not listed')}</td></tr>`).join('')}</tbody></table>`;
 }
-async function init(){try{await load();$('#login-view').classList.add('admin-hidden');$('#dashboard').classList.remove('admin-hidden')}catch(e){if(!String(e.message).toLowerCase().includes('authentication'))$('#login-error').textContent=e.message}}
-$('#login-form').addEventListener('submit',async e=>{e.preventDefault();try{await call('/api/admin/login',{method:'POST',body:JSON.stringify({password:$('#password').value})});$('#login-error').textContent='';await init()}catch(x){$('#login-error').textContent=x.message}});
-$('#logout').addEventListener('click',async()=>{await call('/api/admin/logout',{method:'POST'});location.reload()});
-$('#brand-form').addEventListener('submit',async e=>{e.preventDefault();try{const d=Object.fromEntries(new FormData(e.currentTarget));d.evidence=lines(d.evidence);d.aliases=lines(d.aliases);await call('/api/admin/brands',{method:'POST',body:JSON.stringify(d)});e.currentTarget.reset();$('#create-message').textContent='Brand created as Draft.';await load()}catch(x){$('#create-message').textContent=x.message}});
-$('#product-form').addEventListener('submit',async e=>{e.preventDefault();try{const d=Object.fromEntries(new FormData(e.currentTarget));d.evidence=lines(d.evidence);d.aliases=lines(d.aliases);d.field_evidence={version:lines(d.version_evidence),format:lines(d.format_evidence)};await call('/api/admin/products',{method:'POST',body:JSON.stringify(d)});e.currentTarget.reset();$('#create-message').textContent='Product created as Draft.';await load()}catch(x){$('#create-message').textContent=x.message}});
-$('#shade-form').addEventListener('submit',async e=>{e.preventDefault();try{const d=Object.fromEntries(new FormData(e.currentTarget));d.aliases=lines(d.aliases);d.field_evidence={};for(const k of ['identity','name','code','description','depth','undertone','availability'])d.field_evidence[k]=lines(d[k+'_evidence']);await call('/api/admin/shades',{method:'POST',body:JSON.stringify(d)});e.currentTarget.reset();$('#create-message').textContent='Shade created as Draft. Run QA before publication.';await load()}catch(x){$('#create-message').textContent=x.message}});
-$('#claim-form').addEventListener('submit',async e=>{e.preventDefault();try{const d=Object.fromEntries(new FormData(e.currentTarget));d.evidence=lines(d.evidence);await call('/api/admin/claims',{method:'POST',body:JSON.stringify(d)});e.currentTarget.reset();$('#create-message').textContent='Directed claim saved as Draft.';await load()}catch(x){$('#create-message').textContent=x.message}});
+
+function renderCorrections(reports) {
+  const target = $('#correction-list');
+  if (!reports.length) {
+    target.innerHTML = '<p class="admin-muted">No feedback reports yet. New reports from the public form will appear here.</p>';
+    return;
+  }
+  target.innerHTML = reports.map(report => `<article class="queue-item" data-report="${esc(report.id)}">
+    <strong>${esc(report.category)} · ${esc(report.status)}</strong>
+    <p>${esc(report.description)}</p>
+    <p class="admin-muted">Submitted: ${esc(report.created_at)} · Contact: ${esc(report.contact || 'Not provided')} · Retain until: ${esc(report.retain_until || 'Not set')}</p>
+    <div class="admin-actions">
+      <label>Status <select aria-label="Feedback status"><option ${report.status === 'Under Review' ? 'selected' : ''}>Under Review</option><option ${report.status === 'Resolved' ? 'selected' : ''}>Resolved</option><option ${report.status === 'Rejected' ? 'selected' : ''}>Rejected</option></select></label>
+      <input aria-label="Review note" placeholder="Short note required">
+      <button class="button secondary" type="button" data-save-report>Save</button>
+    </div>
+  </article>`).join('');
+  target.querySelectorAll('[data-save-report]').forEach(button => {
+    button.addEventListener('click', async () => {
+      const item = button.closest('[data-report]');
+      const reason = item.querySelector('input').value.trim();
+      if (reason.length < 5) {
+        item.querySelector('input').focus();
+        item.querySelector('input').setCustomValidity('Please enter at least five characters.');
+        item.querySelector('input').reportValidity();
+        item.querySelector('input').setCustomValidity('');
+        return;
+      }
+      button.disabled = true;
+      try {
+        await call('/api/admin/review-correction', {
+          method: 'POST',
+          body: JSON.stringify({ id: item.dataset.report, status: item.querySelector('select').value, reason })
+        });
+        await load();
+      } catch (error) {
+        alert(error.message);
+        button.disabled = false;
+      }
+    });
+  });
+}
+
+async function load() {
+  const [overview, shadeData] = await Promise.all([
+    call('/api/admin/overview'),
+    call('/api/admin/shades')
+  ]);
+  publishedShades = shadeData.items.filter(shade => shade.publication_state === 'Published');
+  $('#stats').innerHTML = `<div class="admin-stat"><strong>${overview.corrections}</strong><span>feedback reports under review</span></div><div class="admin-stat"><strong>${publishedShades.length}</strong><span>published shades</span></div>`;
+  renderCorrections(overview.reports);
+  renderPublishedShades();
+}
+
+async function init() {
+  try {
+    await load();
+    $('#login-view').classList.add('admin-hidden');
+    $('#dashboard').classList.remove('admin-hidden');
+  } catch (error) {
+    if (!String(error.message).toLowerCase().includes('authentication')) $('#login-error').textContent = error.message;
+  }
+}
+
+$('#login-form').addEventListener('submit', async event => {
+  event.preventDefault();
+  try {
+    await call('/api/admin/login', { method: 'POST', body: JSON.stringify({ password: $('#password').value }) });
+    $('#login-error').textContent = '';
+    await init();
+  } catch (error) {
+    $('#login-error').textContent = error.message;
+  }
+});
+$('#logout').addEventListener('click', async () => {
+  await call('/api/admin/logout', { method: 'POST' });
+  location.reload();
+});
+$('#shade-filter').addEventListener('input', renderPublishedShades);
 init();
