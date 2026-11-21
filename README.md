@@ -59,6 +59,17 @@ Known-shade selection asks for product type, then brand/product, then shade. Res
 
 Manual-profile matching validates one of seven ordered depths and one of four undertones. Results are labeled “Exact profile match” when both match, or “Nearby profile match” when undertone matches and depth is adjacent. Imported source-derived values are shown with a clear note that they were not independently checked. Unknown undertone is not Neutral. Input is request-scoped and not stored. No photo, account, or user history is collected. Match snapshots are not enabled in Release 1.
 
+## Data structures used in the application
+
+`data_structures.py` contains small request-scoped structures. SQLite/PostgreSQL remains the durable source of truth; these in-memory structures organize results without changing database records.
+
+- **Lists (arrays):** Python lists collect search/profile results and match records. Search appends eligible rows, sorts them, and returns up to 80 results. Scanning `n` candidate rows is O(n); sorting `r` results is O(r log r).
+- **Correction queue:** `FIFOQueue` uses `collections.deque` (first in, first out). The admin overview loads the oldest 100 pending correction reports in timestamp/ID order and drains that bounded queue into the response. The database keeps the full queue; after reviewed items are closed, the next oldest items appear. Enqueue/dequeue are O(1); loading/sending `k` rows is O(k). Closed reports are shown after pending reports.
+- **Directed match graph:** `DirectedMatchGraph` uses an adjacency list keyed by source shade ID. The known-shade endpoint loads only published, resolvable outgoing claims for the requested shade, then returns its direct neighbors. It never reverses an edge or follows a path transitively. Looking up a node is O(1) average plus O(d) to copy its `d` outgoing claims.
+- **Catalogue tree and recursion:** `/api/catalogue/tree` loads published brand/product/shade rows, builds a three-level tree keyed by stable IDs, and recursively serializes it. The public catalogue’s “Browse by brand and product” control requests this endpoint and recursively renders collapsible branches. Building and serializing `n` shade rows is O(n); recursion depth is fixed at three levels, so it is bounded and does not depend on user-provided nesting.
+
+The algorithms are deliberately limited to the actual product needs: the queue preserves review order, the graph represents directed evidence-backed claims, and the tree supports hierarchical catalogue browsing. A linked list is not used because random lookup and database-backed records are a better fit for this application.
+
 ## PostgreSQL deployment
 
 Install the production driver with `pip install -r requirements.txt`, provision a managed PostgreSQL database, and set `TEINTE_DATABASE_URL` to its TLS-required connection string. Set `TEINTE_SECURE_COOKIES=1`, `TEINTE_ADMIN_PASSWORD`, and a persistent writable `TEINTE_DB_PATH` only if using SQLite locally. Apply the idempotent `migrations/002_postgres.sql` before starting the server. The runtime uses Postgres when `TEINTE_DATABASE_URL` is set. Keep development, staging, and production credentials/databases separate. Do not put secrets in the repository or browser.
@@ -98,4 +109,4 @@ The job removes correction contact values past their retention date and expired 
 
 ## Checks and current limitations
 
-Run `python3 -m py_compile server.py import_sources.py seed_catalogue.py maintenance.py` and `python3 -m unittest discover -s tests -v`. Run the app and `/api/health` for a local smoke check. The supplied data is loaded in source-derived mode as requested; it is not independently verified, and unresolved rows are not matchable. Before public launch, resolve the missing source matrix if needed, identify the data controller/contact, complete Philippine privacy/legal review, configure HTTPS/backups/restore and daily retention cleanup, and complete accessibility/performance/browser review.
+Run `python3 -m py_compile server.py data_structures.py import_sources.py seed_catalogue.py maintenance.py` and `python3 -m unittest discover -s tests -v`. Run the app and `/api/health` for a local smoke check. The supplied data is loaded in source-derived mode as requested; it is not independently verified, and unresolved rows are not matchable. Before public launch, resolve the missing source matrix if needed, identify the data controller/contact, complete Philippine privacy/legal review, configure HTTPS/backups/restore and daily retention cleanup, and complete accessibility/performance/browser review.

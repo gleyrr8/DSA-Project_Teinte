@@ -13,3 +13,7 @@ __pycache__/
 
 # Local stylesheet backup
 /public/styles_og.css
+
+# Local macOS metadata and private recovery copies
+.DS_Store
+/data/backups/

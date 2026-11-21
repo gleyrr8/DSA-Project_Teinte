@@ -6,6 +6,7 @@ from urllib.parse import urlparse, parse_qs, unquote
 import datetime as dt, hashlib, hmac, json, os, re, secrets, sqlite3, time, uuid
 import unicodedata, difflib
 import re as _re
+from data_structures import FIFOQueue, DirectedMatchGraph, build_catalogue_tree, catalogue_node_to_dict
 
 ROOT = Path(__file__).resolve().parent
 DB_DEFAULT = ROOT / 'data' / 'teinte.sqlite3'
@@ -76,6 +77,8 @@ def undertone_profile_values(value):
     components eligible for manual profile filtering. Unknown-only labels stay out.
     """
     parts=set(re.findall(r'cool|neutral|warm|olive',norm(value)))
+    # Profile selector values are title-cased (e.g. "Warm"), while norm()
+    # deliberately lower-cases the source labels. Return canonical UI labels.
     return {part.title() for part in parts}
 def product_type(fmt, name=''):
     value=norm((fmt or '')+' '+(name or ''))
@@ -177,6 +180,7 @@ class Handler(SimpleHTTPRequestHandler):
                     FROM shade s JOIN product p ON p.id=s.product_id JOIN brand b ON b.id=p.brand_id
                     WHERE s.publication_state='Published' AND p.publication_state='Published' AND b.publication_state='Published'
                     AND s.lifecycle!='Archived' AND p.lifecycle!='Archived'""")
+                # A Python list is the result array: eligible records are appended, then sorted and capped.
                 terms=term.split(); result=[]; fmt=q.get('format',[''])[0]; ph=q.get('ph',[''])[0]=='1'
                 for x in candidates:
                     if fmt and x.get('format')!=fmt: continue
@@ -194,6 +198,15 @@ class Handler(SimpleHTTPRequestHandler):
                 return self.send_json({'items':result[:80], 'total':len(result), 'reason':None if result else ('No published entries match these filters.' if fmt or ph else 'No published catalogue entries match. Source records remain under review.')})
             if path=='/api/catalogue':
                 return self.send_json({'brands':rows("SELECT id,name FROM brand WHERE publication_state='Published' ORDER BY name"), 'formats':[x['format'] for x in rows("SELECT DISTINCT format FROM product WHERE publication_state='Published' AND format IS NOT NULL ORDER BY format")], 'ph_available':row("SELECT count(*) n FROM shade WHERE publication_state='Published' AND availability='Available in PH' AND availability_source IS NOT NULL")['n'],'count':row("SELECT count(*) n FROM shade WHERE publication_state='Published'")['n']})
+            if path=='/api/catalogue/tree':
+                published=rows("""SELECT b.id brand_id,b.name brand_name,p.id product_id,p.name product_name,p.format,
+                    s.id shade_id,s.name shade_name,s.code,s.depth,s.undertone
+                    FROM brand b JOIN product p ON p.brand_id=b.id JOIN shade s ON s.product_id=p.id
+                    WHERE b.publication_state='Published' AND p.publication_state='Published' AND s.publication_state='Published'
+                    AND p.lifecycle!='Archived' AND s.lifecycle!='Archived'
+                    ORDER BY b.name,p.name,s.name,s.code""")
+                tree=build_catalogue_tree(published)
+                return self.send_json(catalogue_node_to_dict(tree))
             if path=='/api/products':
                 term=q.get('q',[''])[0].strip(); kind=q.get('type',[''])[0]
                 if kind not in ['skin_tint','foundation','powder_foundation','other']:return self.send_json({'items':[],'reason':'Choose a product type first.'},400)
@@ -248,6 +261,10 @@ class Handler(SimpleHTTPRequestHandler):
                 t.id shade_id,t.name shade_name,t.code,t.depth,t.undertone,t.original_description,t.availability,p.name product_name,p.format,b.name brand_name
                 FROM match_claim m JOIN shade t ON t.id=m.target_shade_id JOIN product p ON p.id=t.product_id JOIN brand b ON b.id=p.brand_id
                 WHERE m.source_shade_id=? AND m.status='Published' AND t.publication_state='Published' AND p.publication_state='Published' AND b.publication_state='Published' AND t.lifecycle!='Archived' ORDER BY m.confidence DESC""",(sid,))
+                graph=DirectedMatchGraph()
+                for claim in matches:
+                    graph.add_edge(sid,claim['shade_id'],claim)
+                matches=graph.outgoing(sid)  # Direct outgoing edges only; never reverse or chain.
                 for m in matches:
                     m['depth_from_description']=description_attribute_consensus(m.get('original_description'),'depth') if not m.get('depth') else None
                     m['undertone_from_description']=description_attribute_consensus(m.get('original_description'),'undertone') if not m.get('undertone') else None
@@ -272,7 +289,12 @@ class Handler(SimpleHTTPRequestHandler):
             if path.startswith('/api/admin/'):
                 if not self.admin(): return self.send_json({'error':'Admin authentication required.'},401)
                 if path=='/api/admin/overview':
-                    return self.send_json({'staged':row('SELECT count(*) n FROM staged_record WHERE disposition="unreviewed"')['n'],'corrections':row('SELECT count(*) n FROM correction_report WHERE status="Under Review"')['n'],'published':row('SELECT count(*) n FROM shade WHERE publication_state="Published"')['n'],'audit':rows('SELECT * FROM audit_event ORDER BY created_at DESC LIMIT 100'),'reports':rows('SELECT id,category,description,contact,status,created_at,retain_until FROM correction_report ORDER BY created_at DESC LIMIT 100')})
+                    correction_queue=FIFOQueue(rows('SELECT id,category,description,contact,status,created_at,retain_until FROM correction_report WHERE status="Under Review" ORDER BY created_at ASC,id ASC LIMIT 100'))
+                    pending_reports=[]
+                    while correction_queue:
+                        pending_reports.append(correction_queue.dequeue())
+                    closed_reports=rows('SELECT id,category,description,contact,status,created_at,retain_until FROM correction_report WHERE status!="Under Review" ORDER BY created_at DESC,id DESC LIMIT 100')
+                    return self.send_json({'staged':row('SELECT count(*) n FROM staged_record WHERE disposition="unreviewed"')['n'],'corrections':row('SELECT count(*) n FROM correction_report WHERE status="Under Review"')['n'],'published':row('SELECT count(*) n FROM shade WHERE publication_state="Published"')['n'],'audit':rows('SELECT * FROM audit_event ORDER BY created_at DESC LIMIT 100'),'reports':pending_reports+closed_reports})
                 if path=='/api/admin/staged':
                     offset=max(0,int(q.get('offset',['0'])[0]));limit=min(50,max(1,int(q.get('limit',['25'])[0])))
                     return self.send_json({'items':rows('SELECT r.*,f.filename FROM staged_record r JOIN source_file f ON f.id=r.source_file_id ORDER BY r.created_at,r.source_row LIMIT ? OFFSET ?',(limit,offset)),'total':row('SELECT count(*) n FROM staged_record')['n'],'offset':offset,'limit':limit})

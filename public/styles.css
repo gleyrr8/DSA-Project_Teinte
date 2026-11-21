@@ -3593,3 +3593,13 @@ footer {
 			text-align: left;
 		}
 }
+
+
+/* Recursive catalogue browser */
+.catalogue-tree-toggle { margin: 0 0 14px; }
+.catalogue-tree { margin: 0 0 24px; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+.catalogue-tree details { margin: 5px 0 5px 14px; }
+.catalogue-tree summary { cursor: pointer; color: var(--plum); font-weight: 600; }
+.catalogue-tree-children { padding: 4px 0 4px 10px; }
+.catalogue-tree-shade { display: block; margin: 4px 0 4px 16px; padding: 5px 9px; border: 0; border-radius: 5px; background: var(--pale); color: var(--ink); text-align: left; cursor: pointer; }
+.catalogue-tree-shade:hover { background: var(--blush); }

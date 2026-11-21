@@ -44,6 +44,13 @@ class Journeys(unittest.TestCase):
         _,cmp,_=self.request('/api/compare?ids='+self.ids['s1']+','+self.ids['s2']);self.assertEqual(len(cmp['items']),2)
         _,product,_=self.request('/api/products/'+self.ids['p1']);self.assertEqual(len(product['shades']),1)
         _,brand,_=self.request('/api/brands/'+self.ids['b1']);self.assertEqual(len(brand['products']),1)
+    def test_catalogue_tree_api_includes_only_published_records(self):
+        code,tree,_=self.request('/api/catalogue/tree');self.assertEqual(code,200)
+        brand=next(x for x in tree['children'] if x['id']==self.ids['b1'])
+        product=next(x for x in brand['children'] if x['id']==self.ids['p1'])
+        self.assertEqual([x['id'] for x in product['children']],[self.ids['s1']])
+        all_shade_ids={shade['id'] for b in tree['children'] for p in b['children'] for shade in p['children']}
+        self.assertNotIn(self.ids['s6'],all_shade_ids)  # Draft shade is not exposed.
     def test_known_product_type_filter_groups_before_shade_selection(self):
         code,d,_=self.request('/api/products?type=foundation&q=other%20brand');self.assertEqual(code,200);self.assertEqual(d['items'],[])
         _,d,_=self.request('/api/products?type=skin_tint&q=other%20brand');self.assertEqual([x['product_id'] for x in d['items']],[self.ids['p2']])
@@ -71,6 +78,18 @@ class Journeys(unittest.TestCase):
             code,d,_=self.request('/api/corrections',{'category':'Wrong shade','description':f'Please review this catalogue shade detail {i}.','contact':''});self.assertEqual(code,201,d)
         code,_,_=self.request('/api/corrections',{'category':'Wrong shade','description':'Please review this catalogue shade detail beyond limit.','contact':''});self.assertEqual(code,429)
         with server.connect() as db:self.assertEqual(db.execute('SELECT count(*) FROM shade WHERE publication_state="Published"').fetchone()[0],7)
+    def test_admin_correction_queue_is_fifo(self):
+        import datetime
+        _,_,headers=self.request('/api/admin/login',{'password':os.environ['TEINTE_ADMIN_PASSWORD']});cookie=headers.get('Set-Cookie').split(';',1)[0]
+        ids=[str(uuid.uuid4()) for _ in range(3)]
+        base=datetime.datetime(2026,1,1,tzinfo=datetime.timezone.utc)
+        with server.connect() as db:
+            for i,report_id in enumerate(ids):
+                created=(base+datetime.timedelta(minutes=i)).isoformat(timespec='seconds')
+                db.execute('INSERT INTO correction_report VALUES(?,?,?,?,?,?,?,?,?)',(report_id,'Other',f'FIFO test report {i}',None,'Under Review',created,(base+datetime.timedelta(days=90)).isoformat(timespec='seconds'),None,None))
+        code,result,_=self.request('/api/admin/overview',cookie=cookie);self.assertEqual(code,200)
+        report_ids=[x['id'] for x in result['reports']]
+        self.assertEqual(report_ids[:3],ids)
     def test_contact_retention_cleanup(self):
         import maintenance,datetime
         exp=(datetime.datetime.now(datetime.timezone.utc)-datetime.timedelta(days=1)).isoformat(timespec='seconds')
